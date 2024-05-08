@@ -33,9 +33,23 @@ namespace MyCrudApp.Controllers
 
             if (employee.Emp_id == 0)
             {
-                db.EmployeeTb.Add(employee);
-                db.SaveChanges();
-                return Json("Add");
+                if (employee.Emp_name == null &&
+                    employee.Emp_pno == null &&
+                    employee.Emp_salary == null &&
+                    employee.Emp_gender == null &&
+                    employee.Emp_age == null &&
+                    employee.Emp_department == null &&
+                    employee.Emp_designation == null)
+                {
+                    // All properties are null, don't proceed further
+                    return Json("No data Added");
+                }
+                else
+                {
+                    db.EmployeeTb.Add(employee);
+                    db.SaveChanges();
+                    return Json("Add");
+                }
             }
             else
             {
@@ -49,8 +63,8 @@ namespace MyCrudApp.Controllers
                 employeeTb.Emp_department = employee.Emp_department;    
                 employeeTb.Emp_designation = employee.Emp_designation;
                 db.SaveChanges();
+                return Json("Edit");
             }
-            return Json("Edit");
 
         }
 

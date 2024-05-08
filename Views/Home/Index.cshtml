@@ -3,75 +3,21 @@
     ViewData["Title"] = "Home Page";
 }
 
-<table id="employeeTable" class="table">
-    <thead>
-        <tr>
-            <th>Employee ID</th>
-            <th>Name</th>
-            <th>Age</th>
-            <th>Gender</th>
-            <th>Department</th>
-            <th>Designation</th>
-            <th>Phone Number</th>
-            <th>Salary</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody id="employeeTableBody"></tbody>
-</table>
 
 
-
-
-
-@* 
-
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-    Launch demo modal
-</button>
-
+<button id="openModalButton" type="button" class="btn btn-primary" onclick="OpenModal()">Add Employee</button>
 <!-- Modal -->
+
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                <h5 class="modal-title" id="exampleModalLabel">Form</h5>
+                <button style="border : none; background : transparent" type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="CloseModal()">
+                    <span aria-hidden="true" style="font-size : 20px">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                ...
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-        </div>
-    </div>
-</div>
- *@
-
-
-
-@* 
-
-
-
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#employeeModal">Add Employee</button>
-
-<!-- Modal -->
-<div class="modal fade" id="employeeModal" tabindex="-1" role="dialog" aria-labelledby="employeeModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="employeeModalLabel">Add Employee</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-
                 <form id="Form">
                     <input id="Emp_id" type="text" class="form-control" placeholder="Enter Emp ID" hidden />
                     <div>
@@ -108,55 +54,35 @@
                         <br>
                         <input id="Emp_salary" type="text" class="form-control" placeholder="Enter Emp Salary" />
                     </div>
-                    <button type="button" class="btn btn-primary" onclick="AddFun()">Submit</button>
                 </form>
+            </div>
+            <div class="modal-footer">
+@*                 <button id="closeModalButton" type="button" class="btn btn-secondary" data-dismiss="modal" onclick="CloseModal()">Close</button>
+ *@                <button type="button" class="btn btn-primary" onclick="AddFun()">Save</button>
             </div>
         </div>
     </div>
-</div> *@
+</div>
 
 
+<table id="employeeTable" class="table">
+    <thead>
+        <tr>
+            <th>EmpID</th>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Gender</th>
+            <th>Department</th>
+            <th>Designation</th>
+            <th>Phone</th>
+            <th>Salary</th>
+            <th>Edit</th>
+            <th>Delete</th>
 
-
-<form id="Form">
-    <input id="Emp_id" type="text" class="form-control" placeholder="Enter Emp ID" hidden />
-    <div>
-        <label>Emp_name</label>
-        <input id="Emp_name" type="text" class="form-control" placeholder="Enter Emp Name" />
-    </div>
-    <div>
-        <label>Emp_age</label>
-        <br>
-        <input id="Emp_age" type="text" class="form-control" placeholder="Enter Emp Age" />
-    </div>
-    <div>
-        <label>Emp_gender</label>
-        <br>
-        <input id="Emp_gender" type="text" class="form-control" placeholder="Enter Emp Gender" />
-    </div>
-    <div>
-        <label>Emp_department</label>
-        <br>
-        <input id="Emp_department" type="text" class="form-control" placeholder="Enter Emp Department" />
-    </div>
-    <div>
-        <label>Emp_designation</label>
-        <br>
-        <input id="Emp_designation" type="text" class="form-control" placeholder="Enter Emp Designation" />
-    </div>
-    <div>
-        <label>Emp_pno</label>
-        <br>
-        <input id="Emp_pno" type="text" class="form-control" placeholder="Enter Emp Phone Number" />
-    </div>
-    <div>
-        <label>Emp_salary</label>
-        <br>
-        <input id="Emp_salary" type="text" class="form-control" placeholder="Enter Emp Salary" />
-    </div>
-    <button type="button" class="btn btn-primary" onclick="AddFun()">Submit</button>
-</form>
-
+        </tr>
+    </thead>
+    <tbody id="employeeTableBody"></tbody>
+</table>
 
 
 
@@ -177,37 +103,40 @@
         employee.Emp_pno = $('#Emp_pno').val();
         employee.Emp_salary = $('#Emp_salary').val();
 
+        
         $.ajax({
             url: "/Home/AddMethod",
             type: "POST",
             data: {employee: employee},
             success: function (result) {
                 GetDataGrid();
-
-                employee.Emp_id = $('#Emp_id').val('');
-                employee.Emp_name = $('#Emp_name').val('');
-                employee.Emp_age = $('#Emp_age').val('');
-                employee.Emp_gender = $('#Emp_gender').val('');
-                employee.Emp_department = $('#Emp_department').val('');
-                employee.Emp_designation = $('#Emp_designation').val('');
-                employee.Emp_pno = $('#Emp_pno').val('');
-                employee.Emp_salary = $('#Emp_salary').val('');
+                clearVals();
 
                 if (result == "Add") {
                     alert("Data added successfully");
+                    $('#exampleModal').modal('hide');
+
+                }
+                else if (result == "No data Added"){
+                    alert("No Data Added...");
                 }
                 else{
                     alert("Data Edited successfully");
+                    $('#exampleModal').modal('hide');
+
                 }
 
             },
             error: function (xhr, status, error) {
                 alert("Error occurred while creating employee.");
             },
+            
         });
+        $(this).closest('tr').css('background-color', 'transparent');
+
     }
 
-
+ 
     function GetDataGrid()
     {
         $.ajax({
@@ -230,15 +159,31 @@
                     row.append($('<td>').text(employee.emp_designation));
                     row.append($('<td>').text(employee.emp_pno));
                     row.append($('<td>').text(employee.emp_salary));
-                    var actionColumn = $('<td>');
-                    var editButton = $('<button>').text('Edit').addClass('btn btn-primary btn-sm').click(function () {
-                        PopulateInForm(employee);
-                    });
-                    var deleteButton = $('<button>').text('Delete').addClass('btn btn-danger btn-sm').click(function () {
+                    var editColumn = $('<td>');
+                    var deleteColumn = $('<td>');
+
+                    var editButton = $('<button>')
+                        .addClass('EditButton') // Add class to the button
+                        .html('<img src="images/Edit.png" class="EditBtnImg">') // Add class to the image inside the button
+                        .click(function () {
+
+                            PopulateInForm(employee);
+                            $(this).closest('tr').css('background-color', 'lightgray');
+                            $('#exampleModal').modal('show');
+
+                        });
+
+
+                    var deleteButton = $('<button>').addClass('EditButton').html('<img src="images/Delete.png" class= "EditBtnImg">').click(function () {
                         DeleteEmployee(employee.emp_id);
                     });
-                    actionColumn.append(editButton).append(deleteButton);
-                    row.append(actionColumn);
+
+                   
+                    editColumn.append(editButton)
+                    deleteColumn.append(deleteButton);
+                    row.append(editColumn);
+                    row.append(deleteColumn);
+
                     tableBody.append(row);
                     });
             },
@@ -249,20 +194,8 @@
     }
 
 
-    function PopulateInForm(employee) {
-        $('#Emp_id').val(employee.emp_id)
-        $('#Emp_name').val(employee.emp_name);
-        $('#Emp_age').val(employee.emp_age);
-        $('#Emp_gender').val(employee.emp_gender)
-        $('#Emp_department').val(employee.emp_department) 
-        $('#Emp_designation').val(employee.emp_designation)
-        $('#Emp_pno').val(employee.emp_pno)
-        $('#Emp_salary').val(employee.emp_salary)
-    }
 
-
-    function DeleteEmployee(ToDeleteId)
-    {
+    function DeleteEmployee(ToDeleteId) {
         $.ajax({
             url: "/Home/DeleteMethod",
             type: "Post",
@@ -278,4 +211,40 @@
 
     }
 
+
+
+    function PopulateInForm(employee) {
+        $('#Emp_id').val(employee.emp_id)
+        $('#Emp_name').val(employee.emp_name);
+        $('#Emp_age').val(employee.emp_age);
+        $('#Emp_gender').val(employee.emp_gender)
+        $('#Emp_department').val(employee.emp_department) 
+        $('#Emp_designation').val(employee.emp_designation)
+        $('#Emp_pno').val(employee.emp_pno)
+        $('#Emp_salary').val(employee.emp_salary)
+    }
+
+    function clearVals() {
+
+        $('#Emp_id').val('');
+        $('#Emp_name').val('');
+        $('#Emp_age').val('');
+        $('#Emp_gender').val('');
+        $('#Emp_department').val('');
+        $('#Emp_designation').val('');
+        $('#Emp_pno').val('');
+        $('#Emp_salary').val('');
+    }
+
+
+    function OpenModal() {
+            $('#exampleModal').modal('show');
+    }
+
+    function CloseModal(){
+        $('#exampleModal').modal('hide');
+        clearVals();
+        $('tr').css('background-color', 'transparent');
+
+    }
 </script>
