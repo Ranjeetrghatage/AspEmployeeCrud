@@ -5,7 +5,9 @@
 
 
 
-<button id="openModalButton" type="button" class="btn btn-primary" onclick="OpenModal()">Add Employee</button>
+<button  id="openModalButton" type="button" class="btn btn-primary" onclick="OpenModal()">Add Employee</button>
+<input id="SearchInputId" type="text" class="SearchInput" placeholder="Type here to Search By Name...." />
+
 <!-- Modal -->
 
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -109,9 +111,16 @@
             type: "POST",
             data: {employee: employee},
             success: function (result) {
-                GetDataGrid();
-                clearVals();
 
+                if(SearchInputId.value!=null)
+                {
+                    SearchData(SearchInputId.value)
+                }
+                else{
+                    GetDataGrid();
+                }
+
+                clearVals();
                 if (result == "Add") {
                     alert("Data added successfully");
                     $('#exampleModal').modal('hide');
@@ -195,19 +204,26 @@
 
 
 
-    function DeleteEmployee(ToDeleteId) {
-        $.ajax({
-            url: "/Home/DeleteMethod",
-            type: "Post",
-            dataType: 'json',
-            data: { id: ToDeleteId },
-            success: function (result) {
-                GetDataGrid();
-            },
-            error: function (xhr, status, error) {
-                alert("Error occurred while creating employee.");
-            }
-        });
+    function DeleteEmployee(ToDeleteId) 
+    {
+            $.ajax({
+                url: "/Home/DeleteMethod",
+                type: "Post",
+                dataType: 'json',
+                data: { id: ToDeleteId },
+                success: function (result) 
+                {
+                if (SearchInputId.value != null)
+                    SearchData(SearchInputId.value);
+                else
+                    GetDataGrid();
+                },
+                error: function (xhr, status, error) {
+                    alert("Error occurred while creating employee.");
+                }
+            });
+
+      
 
     }
 
@@ -247,4 +263,76 @@
         $('tr').css('background-color', 'transparent');
 
     }
+
+
+    document.getElementById('SearchInputId').addEventListener('input', (e) => {
+        SearchData(e.target.value);
+    });
+
+
+
+    function SearchData(searchinput){
+        $.ajax({
+            url: "/Home/SearchMethod",
+            type: "Post",
+            dataType: 'json',
+            data: { SearchText: searchinput },
+
+            success: function (result) {
+                // employee
+                //alert("Came back to index");
+
+
+                var tableBody = $('#employeeTableBody');
+                tableBody.empty(); // Clear existing rows
+
+                // Populate table with fetched data
+                $.each(result, function (index, employee) {
+                    var row = $('<tr>');
+                    row.append($('<td>').text(employee.emp_id));
+                    row.append($('<td>').text(employee.emp_name));
+                    row.append($('<td>').text(employee.emp_age));
+                    row.append($('<td>').text(employee.emp_gender));
+                    row.append($('<td>').text(employee.emp_department));
+                    row.append($('<td>').text(employee.emp_designation));
+                    row.append($('<td>').text(employee.emp_pno));
+                    row.append($('<td>').text(employee.emp_salary));
+                    var editColumn = $('<td>');
+                    var deleteColumn = $('<td>');
+
+                    var editButton = $('<button>')
+                        .addClass('EditButton') // Add class to the button
+                        .html('<img src="images/Edit.png" class="EditBtnImg">') // Add class to the image inside the button
+                        .click(function () {
+
+                            PopulateInForm(employee);
+                            $(this).closest('tr').css('background-color', 'lightgray');
+                            $('#exampleModal').modal('show');
+
+                        });
+
+
+                    var deleteButton = $('<button>').addClass('EditButton').html('<img src="images/Delete.png" class= "EditBtnImg">').click(function () {
+                        DeleteEmployee(employee.emp_id);
+                    });
+
+
+                    editColumn.append(editButton)
+                    deleteColumn.append(deleteButton);
+                    row.append(editColumn);
+                    row.append(deleteColumn);
+
+                    tableBody.append(row);
+                });
+
+
+
+            },
+            error: function (xhr, status, error) {
+                alert("Error occurred while Searching employee.");
+            }
+        });
+
+    }
+
 </script>

@@ -72,9 +72,27 @@ namespace MyCrudApp.Controllers
         {
             
                 var db = new Employee_management_SystemContext(_dbconnection);
-                var getData = db.EmployeeTb.ToList();
+                var getData = db.EmployeeTb;
                 return Json(getData); 
            
+        }
+
+        public IActionResult SearchMethod(string SearchText)
+        {
+            var db = new Employee_management_SystemContext(_dbconnection);
+
+            if (SearchText == null)
+            {
+                var getData = db.EmployeeTb;
+                return Json(getData);
+            }
+            else
+            {
+                List<EmployeeTb> employeeTbList = new List<EmployeeTb>();
+                employeeTbList = db.EmployeeTb.Where(x => x.Emp_name.Contains(SearchText)).ToList();
+
+                return Json(employeeTbList);
+            }
         }
 
 

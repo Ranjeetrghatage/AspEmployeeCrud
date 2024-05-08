@@ -77,3 +77,13 @@ body {
     font-size: 13px;
     height : 8px;
 }
+
+.SearchInput {
+    margin-left: 50px;
+    border: none;
+    width: 50%;
+    border-bottom: 1px solid black;
+    outline: none;
+    font-size :18px
+}
+
