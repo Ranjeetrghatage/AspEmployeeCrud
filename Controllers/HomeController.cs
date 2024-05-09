@@ -11,7 +11,7 @@ namespace MyCrudApp.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly DbContextOptions<Employee_management_SystemContext> _dbconnection;
         //private readonly string conn = "Data Source=DESKTOP-DHQ0QJ7\\SQLEXPRESS;Initial Catalog=Employee_management_System;Integrated Security=True;TrustServerCertificate=True";
-        private readonly string conn = "server=localhost;database=Employee_management_System;MultipleActiveResultSets=True;Integrated Security=False;trusted_connection=true;Encrypt=false";
+      private readonly string conn = "server=localhost;database=Employee_management_System;MultipleActiveResultSets=True;Integrated Security=False;trusted_connection=true;Encrypt=false";
 
 
         public HomeController(ILogger<HomeController> logger)
@@ -77,7 +77,7 @@ namespace MyCrudApp.Controllers
            
         }
 
-        public IActionResult SearchMethod(string SearchText)
+        public IActionResult SearchMethod(string SearchText,string HeaderSelected)
         {
             var db = new Employee_management_SystemContext(_dbconnection);
 
@@ -88,13 +88,26 @@ namespace MyCrudApp.Controllers
             }
             else
             {
-                List<EmployeeTb> employeeTbList = new List<EmployeeTb>();
-                employeeTbList = db.EmployeeTb.Where(x => x.Emp_name.Contains(SearchText)).ToList();
-
-                return Json(employeeTbList);
+                List<EmployeeTb> FilteredList = new List<EmployeeTb>();
+                foreach (var item in db.EmployeeTb.ToList())
+                {
+                    bool property = item.GetType().GetProperty(HeaderSelected).GetValue(item,null).ToString().Contains(SearchText);
+                    if (property)
+                    {
+                            FilteredList.Add(item);
+                    }
+                }
+                return Json(FilteredList);
             }
         }
 
+
+
+        //var propertyInfo = typeof(EmployeeTb).GetProperty(HeaderSelected);
+        //List<EmployeeTb> employeeTbList = new List<EmployeeTb>();
+        //employeeTbList = db.EmployeeTb.Where(x => propertyInfo.GetValue(x).ToString().Contains(SearchText)).ToList();
+
+        //return Json(employeeTbList);
 
 
         public IActionResult DeleteMethod(int id)

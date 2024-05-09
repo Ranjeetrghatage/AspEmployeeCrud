@@ -5,8 +5,25 @@
 
 
 
-<button  id="openModalButton" type="button" class="btn btn-primary" onclick="OpenModal()">Add Employee</button>
-<input id="SearchInputId" type="text" class="SearchInput" placeholder="Type here to Search By Name...." />
+<div style="display : flex; width : 100%; align-items : center">
+    <button id="openModalButton" type="button" class="btn btn-primary" onclick="OpenModal()">Add Employee</button>
+
+    <select id="HeaderSelect" style="outline : none; margin-left : 10px; height : 35px ; margin-top :8px">
+        <option value="">--Choose Header--</option>
+        <option value="Emp_id">Emp_id</option>
+        <option value="Emp_name">Emp_name</option>
+        <option value="Emp_age">Emp_age</option>
+        <option value="Emp_gender">Emp_gender</option>
+        <option value="Emp_department">Emp_department</option>
+        <option value="Emp_designation">Emp_designation</option>
+        <option value="Emp_pno">Emp_pno</option>
+        <option value="Emp_salary">Emp_salary</option>
+
+    </select>
+
+    <input style="margin-top : 5px" id="SearchInputId" disabled = "true" type="text" class="SearchInput" placeholder="Select Combobox Value to Search...." />
+
+</div>
 
 <!-- Modal -->
 
@@ -34,7 +51,11 @@
                     <div>
                         <label>Emp_gender</label>
                         <br>
-                        <input id="Emp_gender" type="text" class="form-control" placeholder="Enter Emp Gender" />
+                            <select id="Emp_gender" style="outline : none">
+                                <option value="">--Please choose an option--</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
                     </div>
                     <div>
                         <label>Emp_department</label>
@@ -266,17 +287,29 @@
 
 
     document.getElementById('SearchInputId').addEventListener('input', (e) => {
-        SearchData(e.target.value);
+        SearchData(e.target.value, HeaderSelect.value);
+    });
+
+    document.getElementById('HeaderSelect').addEventListener('change', () => {
+        var HeaderSelect = document.getElementById('HeaderSelect');
+        var SearchInput = document.getElementById('SearchInputId');
+        if (HeaderSelect.value !== "") {
+            SearchInput.placeholder = "Great Now Type to Search";
+            SearchInput.disabled = false;
+        } else {
+            SearchInput.placeholder = "Choose Header and Then Search Text Here...";
+            SearchInput.disabled = true;
+        }
     });
 
 
 
-    function SearchData(searchinput){
+    function SearchData(searchinput,headerselected){
         $.ajax({
             url: "/Home/SearchMethod",
             type: "Post",
             dataType: 'json',
-            data: { SearchText: searchinput },
+            data: { SearchText: searchinput, HeaderSelected: headerselected },
 
             success: function (result) {
                 // employee
@@ -308,7 +341,6 @@
                             PopulateInForm(employee);
                             $(this).closest('tr').css('background-color', 'lightgray');
                             $('#exampleModal').modal('show');
-
                         });
 
 
